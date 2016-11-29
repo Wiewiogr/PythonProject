@@ -2,15 +2,18 @@ import chromosome
 import random
 
 class GeneticAlgorithm(object):
-    def __init__(self,crossoverRate,mutationRate):
+    def __init__(self,population,crossoverRate,mutationRate,
+            numberOfGenes,geneInit = chromosome.geneFunction):
         self.generation = 0
         self.crossoverRate = crossoverRate
         self.mutationRate = mutationRate
+        self.chromosomes = [chromosome.Chromosome(numberOfGenes,geneInit)
+                for i in xrange(population)]
 
-    def roulette(self,chromosomes,summedFitness):
+    def roulette(self,summedFitness):
         counter = 0
         target = random.uniform(0,summedFitness)
-        for chromo in chromosomes:
+        for chromo in self.chromosomes:
             counter += chromo.fitness
             if target < counter:
                 return chromo
@@ -27,10 +30,10 @@ class GeneticAlgorithm(object):
             print "mutate"
 
 
-    def evolve(self,chromosomes):
+    def evolve(self):
         summedFitness = sum([x.fitness for x in chromosomes])
-        first = self.roulette(chromosomes,summedFitness)
-        second = self.roulette(chromosomes,summedFitness)
+        first = self.roulette(self.chromosomes,summedFitness)
+        second = self.roulette(self.chromosomes,summedFitness)
         self.crossover(first,second)
         self.mutate(first)
         self.mutate(second)
@@ -38,9 +41,8 @@ class GeneticAlgorithm(object):
 
 
 if __name__ == "__main__":
-    a = GeneticAlgorithm(0.7,0.001)
-    chromo = [chromosome.Chromosome(20) for x in range(10)]
-    for x in chromo:
+    a = GeneticAlgorithm(20,0.7,0.001)
+    for x in a.chromosomes:
         x.fitness = 0.5
 
     a.evolve(chromo)
