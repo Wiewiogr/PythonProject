@@ -4,7 +4,7 @@ import random
 class GeneticAlgorithm(object):
     def __init__(self,population,crossoverRate,mutationRate,
             numberOfGenes,geneInit = chromosome.geneFunction):
-        self.generation = 0
+        self.population = population
         self.crossoverRate = crossoverRate
         self.mutationRate = mutationRate
         self.chromosomes = [chromosome.Chromosome(numberOfGenes,geneInit)
@@ -26,18 +26,32 @@ class GeneticAlgorithm(object):
 
     def mutate(self,chromo):
         if random.uniform(0,1) < self.mutationRate:
-            chromo.genes[random.randint(0,chromo.numberOfGenes)] += 0.05
+            chromo.genes[random.randint(0,chromo.numberOfGenes-1)] += 0.05
             print "mutate"
 
 
     def evolve(self):
-        summedFitness = sum([x.fitness for x in chromosomes])
-        first = self.roulette(self.chromosomes,summedFitness)
-        second = self.roulette(self.chromosomes,summedFitness)
-        self.crossover(first,second)
-        self.mutate(first)
-        self.mutate(second)
-        self.generation += 1
+        summedFitness = sum([x.fitness for x in self.chromosomes])
+        newChromosomes = []
+        while len(newChromosomes) != self.population:
+            print "Before : "
+            first = self.roulette(summedFitness)
+            second = self.roulette(summedFitness)
+            print "first fit :",first.fitness,first.genes
+            print "sec fit: ",second.fitness,second.genes
+            print "after :"
+            self.crossover(first,second)
+            print first.genes
+            print second.genes
+            print "mutation : "
+            self.mutate(first)
+            self.mutate(second)
+            print first.genes
+            print second.genes
+            newChromosomes.append(first)
+            newChromosomes.append(second)
+        self.chromosomes = newChromosomes[:]
+        print "number of new chromosomes",len(self.chromosomes)
 
 
 if __name__ == "__main__":

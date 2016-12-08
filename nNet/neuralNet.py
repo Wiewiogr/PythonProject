@@ -1,4 +1,8 @@
 from neuronLayer import NeuronLayer
+import math
+
+def sigmoid(x):
+    return 1.0/(1.0+math.exp(-x))
 
 class NeuralNet(object):
     def __init__(self,numOfInputs,numOfOutputs,
@@ -19,7 +23,16 @@ class NeuralNet(object):
                 neuron.weights = genes[index:index+neuron.numOfInputs+1]
                 index += neuron.numOfInputs + 1
 
-    def getOutput(self):
-        pass
-
-
+    def getOutput(self,inputs):
+        out = []
+        inp = inputs[:]
+        for layer in self.layers:
+            out = []
+            for neuron in layer.neurons:
+                val = 0
+                for i in xrange(len(neuron.weights)-1):
+                    val += inp[i] * neuron.weights[i]
+                val -= neuron.weights[-1]
+                out.append(sigmoid(val))
+            inp = out[:]
+        return out
