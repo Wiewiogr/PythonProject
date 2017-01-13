@@ -19,11 +19,28 @@ class Controller(object):
             nNet.putWeights(chromo.genes)
 
     def updateFitness(self,fitness):
-        for chromo, fit in zip(self.geneticAlg.chromosomes, fitness):
-            chromo.fitness = fit
+        print "updateFitness :",fitness
+        for i in xrange(len(fitness)):
+            print "i : ",i,self.geneticAlg.chromosomes[i].fitness,"=", fitness[i]
+            self.geneticAlg.chromosomes[i].fitness = fitness[i]
+        for i in xrange(len(fitness)):
+            print "i : ",i,self.geneticAlg.chromosomes[i].fitness,"=", fitness[i]
+            self.geneticAlg.chromosomes[i].fitness = fitness[i]
+#        for chromo, fit in zip(self.geneticAlg.chromosomes, fitness):
+#            chromo.fitness = fit
+#            fitt.append(fit)
+        print "fitnesses in update", [x.fitness for x in self.geneticAlg.chromosomes]
+        fitnesses = []
+        for x in self.geneticAlg.chromosomes:
+            fitnesses.append(x.fitness)
+
+        print "last fitnesses in update", fitnesses
+
 
     def evolve(self,fitness):
-        self.updateFitness(fitness)
+        print "evolve :",fitness
+        self.geneticAlg.fitnesses = fitness[:]
+        #self.updateFitness(fitness)
         self.generation += 1
         self.geneticAlg.evolve()
         for i in xrange(len(self.neuralNets)):

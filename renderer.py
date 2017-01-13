@@ -11,8 +11,8 @@ ball = pong.ball.Ball(width,height)
 paddleLeft = pong.paddle.Paddle(20,height/2)
 paddleRight = pong.paddle.Paddle(width - 30,height/2)
 
-population = 60
-controller = nNet.controller.Controller(population,4,1,1,5,0.7,0.05)
+population = 40
+controller = nNet.controller.Controller(population,5,1,1,5,0.7,0.05)
 font = pygame.font.Font(None,30)
 trained = 0
 fitness = []
@@ -39,10 +39,16 @@ def playerMovement():
         paddleRight.move(-1,height)
 
 def getInput(paddle):
+    normalHeight = paddle.rect.y*2.0/height-1.0
+    normalXVector = abs(ball.rect.x-paddle.rect.x)*2.0/width-1
+    normalYVector = (ball.rect.y - paddle.rect.y)*1.0/height
+    ballYVelocity = ball.yVelocity/3.0
+    side = 1
+    if paddle.rect.x > width/2.0:
+        side *= -1
+    ballXVelocity = ball.xVelocity/3.0 * side
     #return [abs(ball.rect.y - paddle.rect.y)*1.0/height,ball.rect.y*1.0/height]
-    return [paddle.rect.y*2.0/height-1.0,
-            abs(ball.rect.x-paddle.rect.x)*2.0/width-1,(ball.rect.y - paddle.rect.y)*1.0/height,
-            ball.yVelocity/3.0]
+    return [normalHeight, normalXVector, normalYVector, ballYVelocity, ballXVelocity ]
 #    return [ball.xVelocity/9.0,ball.yVelocity/9.0,
 #            1.0*ball.rect.x/width,1.0*ball.rect.y/height,
 #            1.0*paddle.rect.y/height]

@@ -1,5 +1,6 @@
 import chromosome
 import random
+import copy
 
 class GeneticAlgorithm(object):
     def __init__(self,population,crossoverRate,mutationRate,
@@ -7,16 +8,24 @@ class GeneticAlgorithm(object):
         self.population = population
         self.crossoverRate = crossoverRate
         self.mutationRate = mutationRate
+        self.fitnesses = []
         self.chromosomes = [chromosome.Chromosome(numberOfGenes,geneInit)
                 for i in xrange(population)]
 
     def roulette(self,summedFitness):
         counter = 0
         target = random.uniform(0,summedFitness)
-        for chromo in self.chromosomes:
-            counter += chromo.fitness
+        print "counter", counter, "target", target
+        for i in xrange(len(self.fitnesses)):
+            counter += self.fitnesses[i]
             if target < counter:
-                return chromo
+                print "choosen", counter,"/", summedFitness
+                return self.chromosomes[i]
+#        for chromo in self.chromosomes[:]: # ??????
+#            counter += chromo.fitness
+#            if target < counter:
+#                print "choosen", counter,"/", summedFitness
+#                return chromo
 
     def crossover(self,first,second):
         if random.uniform(0,self.crossoverRate):
@@ -26,32 +35,50 @@ class GeneticAlgorithm(object):
 
     def mutate(self,chromo):
         if random.uniform(0,1) < self.mutationRate:
-            chromo.genes[random.randint(0,chromo.numberOfGenes-1)] += 0.05
+            chromo.genes[random.randint(0,chromo.numberOfGenes-1)] = chromosome.geneFunction() # +- 0.05
             print "mutate"
 
 
     def evolve(self):
-        summedFitness = sum([x.fitness for x in self.chromosomes])
+        summedFitness = sum(self.fitnesses)
+        print "fitnesses in evolve", self.fitnesses
         newChromosomes = []
         while len(newChromosomes) != self.population:
             print "Before : "
-            first = self.roulette(summedFitness)
-            second = self.roulette(summedFitness)
-            print "first fit :",first.fitness,first.genes
-            print "sec fit: ",second.fitness,second.genes
-            print "after :"
+            first = copy.deepcopy(self.roulette(summedFitness))
+            second = copy.deepcopy(self.roulette(summedFitness))
+            print "first fit :",first.fitness,first.genes[0]
+            print "sec fit: ",second.fitness,second.genes[0]
+            #print "after :"
             self.crossover(first,second)
-            print first.genes
-            print second.genes
-            print "mutation : "
+            #print first.genes
+            #print second.genes
             self.mutate(first)
             self.mutate(second)
-            print first.genes
-            print second.genes
             newChromosomes.append(first)
             newChromosomes.append(second)
         self.chromosomes = newChromosomes[:]
         print "number of new chromosomes",len(self.chromosomes)
+
+        #summedFitness = sum([x.fitness for x in self.chromosomes])
+        #print "fitnesses in evolve", [x.fitness for x in self.chromosomes]
+        #newChromosomes = []
+        #while len(newChromosomes) != self.population:
+        #    print "Before : "
+        #    first = self.roulette(summedFitness)
+        #    second = self.roulette(summedFitness)
+        #    print "first fit :",first.fitness,first.genes[0]
+        #    print "sec fit: ",second.fitness,second.genes[0]
+        #    #print "after :"
+        #    self.crossover(first,second)
+        #    #print first.genes
+        #    #print second.genes
+        #    self.mutate(first)
+        #    self.mutate(second)
+        #    newChromosomes.append(first)
+        #    newChromosomes.append(second)
+        #self.chromosomes = newChromosomes[:]
+        #print "number of new chromosomes",len(self.chromosomes)
 
 
 if __name__ == "__main__":

@@ -43,10 +43,10 @@ class Ball(object):
         if self.rect.colliderect(paddleLeft):
             self.xVelocity *= -1
             self.rect.left = paddleLeft.rect.right
-            paddleLeft.score += 2
+            paddleLeft.score += 5
         elif self.rect.colliderect(paddleRight):
             self.xVelocity *= -1
             self.rect.right = paddleRight.rect.left
-            paddleRight.score += 2
+            paddleRight.score += 5
 
 

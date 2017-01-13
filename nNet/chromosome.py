@@ -1,5 +1,5 @@
 import random
-geneFunction = lambda : random.uniform(-6,6)
+geneFunction = lambda : random.uniform(-1,1)
 
 class Chromosome(object):
     def __init__(self,numberOfGenes,geneInit = geneFunction):

@@ -12,5 +12,11 @@ class Board(object):
             self.snake.eat(self.fruit.segment)
             self.fruit.new()
             print "jemy!!"
+            return True
         else:
-            self.snake.move()
+            return self.snake.move()
+
+    def reset(self):
+        self.snake.reset()
+        self.fruit.new()
+
