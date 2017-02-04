@@ -1,11 +1,12 @@
 import random
+import gene
 geneFunction = lambda : random.uniform(-1,1)
 
 class Chromosome(object):
     def __init__(self,numberOfGenes,geneInit = geneFunction):
         self.fitness = 0
         self.numberOfGenes = numberOfGenes
-        self.genes = [geneInit() for x in xrange(numberOfGenes)]
+        self.genes = [gene.Gene(geneInit()) for x in xrange(numberOfGenes)]
         print "dupa"
         print self.genes
 
