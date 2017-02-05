@@ -1,4 +1,4 @@
-import sys, pygame, pong.ball, pong.paddle, nNet.controller
+import sys, pygame, pong.ball, pong.paddle, nNet.controller, analyser
 pygame.init()
 
 size = width, height = 1200,800
@@ -17,6 +17,9 @@ font = pygame.font.Font(None,30)
 trained = 0
 fitness = []
 aiDummyIndex = 0
+
+analyser = analyser.Analyser(height, width, population)
+analyser.update()
 
 def drawAll():
     screen.fill(black)
@@ -74,6 +77,7 @@ def movePaddleNeuralNet(paddle,index):
     print index," : ",output
     paddle.move(parseOutput(output),height)
 
+mode = "run"
 while 1:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -82,26 +86,32 @@ while 1:
             if event.key == pygame.K_ESCAPE:
                 pygame.quit()
                 sys.exit()
+            elif event.key == pygame.K_SPACE:
+                if mode == "run":
+                    mode = "analyse"
+                else:
+                    mode = "run"
 
-    movePaddleNeuralNet(paddleLeft,trained)
-    movePaddleNeuralNet(paddleRight,aiDummyIndex)
+    if mode == "run":
+        movePaddleNeuralNet(paddleLeft,trained)
+        movePaddleNeuralNet(paddleRight,aiDummyIndex)
+        playerMovement()
+        if ball.tick(width,height,paddleLeft,paddleRight) == -1:
+            fitness.append(paddleLeft.score)
+            #fitness.append(paddleRight.score)
+            trained += 1
+            paddleLeft.reset()
+            paddleRight.reset()
+            if population <= trained:
+                print "fitnesses:"
+                print fitness
+                aiDummyIndex = fitness.index(max(fitness))
+                controller.evolve(fitness)
+                fitness = []
+                trained = 0
+        drawAll()
+    elif mode == "analyse":
+        analyser.draw(screen)
 
-
-    playerMovement()
-    if ball.tick(width,height,paddleLeft,paddleRight) == -1:
-        fitness.append(paddleLeft.score)
-        #fitness.append(paddleRight.score)
-        trained += 1
-        paddleLeft.reset()
-        paddleRight.reset()
-        if population <= trained:
-            print "fitnesses:"
-            print fitness
-            aiDummyIndex = fitness.index(max(fitness))
-            controller.evolve(fitness)
-            fitness = []
-            trained = 0
-
-    drawAll()
     pygame.display.flip()
     #clock.tick(120)
