@@ -1,7 +1,7 @@
 import sys, pygame, pong.ball, pong.paddle, nNet.controller, analyser
 pygame.init()
 
-size = width, height = 1200,800
+size = width, height = 1000,800
 black = (0, 0, 0)
 white = (255,255,255)
 screen = pygame.display.set_mode(size)
@@ -9,26 +9,26 @@ clock = pygame.time.Clock()
 
 ball = pong.ball.Ball(width,height)
 paddleLeft = pong.paddle.Paddle(20,height/2)
-paddleRight = pong.paddle.Paddle(width - 30,height/2)
+#paddleRight = pong.paddle.Paddle(width - 30,height/2)
 
 population = 40
-controller = nNet.controller.Controller(population,5,1,1,5,0.7,0.05)
+controller = nNet.controller.Controller(population,3,1,1,4,0.7,0.05)
 font = pygame.font.Font(None,30)
 trained = 0
 fitness = []
 aiDummyIndex = 0
 
 analyser = analyser.Analyser(height, width, population)
-analyser.update()
+analyser.update([0 for i in xrange(population+1)], controller.geneticAlg.chromosomes)
 
 def drawAll():
     screen.fill(black)
     pygame.draw.rect(screen,white,(ball.rect))
     pygame.draw.rect(screen,white,(paddleLeft.rect))
-    pygame.draw.rect(screen,white,(paddleRight.rect))
-    screen.blit(font.render("num "+str(trained)+" left score : "+str(paddleLeft.score),1,(255,255,255)),[10,10])
-    screen.blit(font.render("num "+str(trained+1)+" right score : "+str(paddleRight.score),1,(255,255,255)),[900,10])
-    screen.blit(font.render("generation : "+str(controller.generation),1,(255,255,255)),[550,10])
+    #pygame.draw.rect(screen,white,(paddleRight.rect))
+    screen.blit(font.render("num "+str(trained)+" score : "+str(paddleLeft.score),1,(255,255,255)),[10,10])
+    #screen.blit(font.render("num "+str(trained+1)+" right score : "+str(paddleRight.score),1,(255,255,255)),[900,10])
+    screen.blit(font.render("generation : "+str(controller.generation),1,(255,255,255)),[(width/2)-50,10])
 
 def playerMovement():
     key = pygame.key.get_pressed()
@@ -51,7 +51,9 @@ def getInput(paddle):
         side *= -1
     ballXVelocity = ball.xVelocity/3.0 * side
     #return [abs(ball.rect.y - paddle.rect.y)*1.0/height,ball.rect.y*1.0/height]
-    return [normalHeight, normalXVector, normalYVector, ballYVelocity, ballXVelocity ]
+    #return [normalXVector, normalYVector]#, ballYVelocity]#, ballXVelocity ]
+    return [normalXVector, normalYVector, ballYVelocity]#, ballXVelocity ]
+    return [normalHeight, normalXVector, normalYVector, ballYVelocity]#, ballXVelocity ]
 #    return [ball.xVelocity/9.0,ball.yVelocity/9.0,
 #            1.0*ball.rect.x/width,1.0*ball.rect.y/height,
 #            1.0*paddle.rect.y/height]
@@ -94,19 +96,21 @@ while 1:
 
     if mode == "run":
         movePaddleNeuralNet(paddleLeft,trained)
-        movePaddleNeuralNet(paddleRight,aiDummyIndex)
+        #movePaddleNeuralNet(paddleRight,aiDummyIndex)
         playerMovement()
-        if ball.tick(width,height,paddleLeft,paddleRight) == -1:
+        #if ball.tick(width,height,paddleLeft,paddleRight) == -1:
+        if ball.tick(width,height,paddleLeft) == -1:
             fitness.append(paddleLeft.score)
             #fitness.append(paddleRight.score)
             trained += 1
             paddleLeft.reset()
-            paddleRight.reset()
+            #paddleRight.reset()
             if population <= trained:
                 print "fitnesses:"
                 print fitness
                 aiDummyIndex = fitness.index(max(fitness))
                 controller.evolve(fitness)
+                analyser.update(fitness, controller.geneticAlg.chromosomes)
                 fitness = []
                 trained = 0
         drawAll()

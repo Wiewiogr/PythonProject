@@ -1,8 +1,8 @@
 import sys, pygame, snake.board, nNet.controller
 pygame.init()
 
-grid = 25
-sizeX, sizeY = 10,20
+grid = 40
+sizeX, sizeY = 30,20
 width, height = grid*sizeX, grid*sizeY + 70
 black = 0, 0, 0
 screen = pygame.display.set_mode([width,height])

@@ -1,6 +1,6 @@
 import pygame
 class Paddle(object):
-    def __init__(self,left,top,width = 10,height = 80):
+    def __init__(self,left,top,width = 16,height = 120):
         self.height = height
         self.initRect = pygame.rect.Rect(left,top-height/2,width,height)
         self.rect = pygame.rect.Rect(self.initRect)

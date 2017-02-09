@@ -1,4 +1,5 @@
 import chromosome
+import gene
 import random
 import copy
 
@@ -9,7 +10,7 @@ class GeneticAlgorithm(object):
         self.crossoverRate = crossoverRate
         self.mutationRate = mutationRate
         self.fitnesses = []
-        self.chromosomes = [chromosome.Chromosome(numberOfGenes,geneInit)
+        self.chromosomes = [chromosome.Chromosome(numberOfGenes,i,geneInit)
                 for i in xrange(population)]
 
     def roulette(self,summedFitness):
@@ -35,7 +36,8 @@ class GeneticAlgorithm(object):
 
     def mutate(self,chromo):
         if random.uniform(0,1) < self.mutationRate:
-            chromo.genes[random.randint(0,chromo.numberOfGenes-1)] = chromosome.geneFunction() # +- 0.05
+            choice = random.randint(0,chromo.numberOfGenes-1)
+            chromo.genes[choice] = gene.Gene(chromosome.geneFunction(),chromo.genes[choice].origin)# +- 0.05
             print "mutate"
 
 
@@ -47,8 +49,8 @@ class GeneticAlgorithm(object):
             print "Before : "
             first = copy.deepcopy(self.roulette(summedFitness))
             second = copy.deepcopy(self.roulette(summedFitness))
-            print "first fit :",first.fitness,first.genes[0]
-            print "sec fit: ",second.fitness,second.genes[0]
+            print "first fit :",first.genes[0]
+            print "sec fit: ",second.genes[0]
             #print "after :"
             self.crossover(first,second)
             #print first.genes
