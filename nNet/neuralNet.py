@@ -1,8 +1,7 @@
 from neuronLayer import NeuronLayer
 import math
 
-def sigmoid(x):
-    return 1.0/(1.0+math.exp(-x))
+sigmoid = lambda x : 1.0/(1.0+math.exp(-x))
 
 class NeuralNet(object):
     def __init__(self,numOfInputs,numOfOutputs,
@@ -29,9 +28,7 @@ class NeuralNet(object):
         for layer in self.layers:
             out = []
             for neuron in layer.neurons:
-                val = 0
-                for i in xrange(len(neuron.weights)-1):
-                    val += inp[i] * neuron.weights[i]
+                val = sum(map(lambda i : neuron.weights[i]*inp[i], xrange(len(neuron.weights)-1)))
                 val -= neuron.weights[-1]
                 out.append(sigmoid(val))
             inp = out[:]

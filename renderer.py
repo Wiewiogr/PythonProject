@@ -88,7 +88,7 @@ while 1:
             if event.key == pygame.K_ESCAPE:
                 pygame.quit()
                 sys.exit()
-            elif event.key == pygame.K_SPACE:
+            elif event.key == pygame.K_a:
                 if mode == "run":
                     mode = "analyse"
                 else:
@@ -118,4 +118,3 @@ while 1:
         analyser.draw(screen)
 
     pygame.display.flip()
-    #clock.tick(120)
