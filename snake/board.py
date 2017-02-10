@@ -11,7 +11,6 @@ class Board(object):
         if self.snake.getHead() == self.fruit.segment:
             self.snake.eat(self.fruit.segment)
             self.fruit.new()
-            print "jemy!!"
             return True
         else:
             return self.snake.move()

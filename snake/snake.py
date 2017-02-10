@@ -10,11 +10,12 @@ class Snake(object):
         self.reset()
 
     def reset(self):
-        first = Segment(randint(0,self.sizeX),randint(0,self.sizeY))
-        self.segments = [first,first + [1,0],first + [2,0]]
-
         self.score = 0
         self.direction = randint(0,3)
+        first = Segment(randint(0,self.sizeX),randint(0,self.sizeY))
+        second = first + direction[self.direction]
+        third = second + direction[self.direction]
+        self.segments = [first, second, third]
 
     def rotateLeft(self):
         self.direction = (self.direction + 1) % 4
@@ -31,16 +32,12 @@ class Snake(object):
         newX = (oldSegment.x+direction[self.direction][0])
         if newX >= self.sizeX or newX < 0:
             return False
-            print "dupa"
         newY = (oldSegment.y+direction[self.direction][1])
         if newY >= self.sizeY or newY < 0:
             return False
-            print "dupa"
         newSegment = Segment(newX,newY)
-        for segment in self.segments:
-            if segment == newSegment:
-                return False
-                print "jem sie"
+        if newSegment in self.segments:
+            return False
         self.segments.pop(0)
         self.segments.append(newSegment)
         return True

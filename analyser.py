@@ -1,19 +1,7 @@
-import matplotlib
+import matplotlib, pylab, pygame
 matplotlib.use("Agg")
 
 import matplotlib.backends.backend_agg as agg
-import pylab
-import pygame
-
-def createGraph():
-    fig.clf()
-    ax = fig.gca()
-    x = [sign*(x-25)*(x-25) for x in xrange(50)]
-    ax.plot(x)
-    canvas = agg.FigureCanvasAgg(fig)
-    canvas.draw()
-    renderer = canvas.get_renderer()
-    return renderer.tostring_rgb()
 
 class Analyser(object):
     def __init__(self, height, width, population):
@@ -28,9 +16,7 @@ class Analyser(object):
         self.figures["max"] = pylab.figure(figsize = [width/200, height/200] , dpi=100,)
         self.figures["average"] = pylab.figure(figsize = [width/200, height/200] , dpi=100,)
         self.figures["chromosome"] = pylab.figure(figsize = [width/100, height/200] , dpi=100,)
-        #print [i*1.0/population for i in xrange(population)]
         self.plotColors = matplotlib.cm.gist_ncar([i*1.0/population for i in xrange(population)])
-        #print self.plotColors
 
     def draw(self, screen):
         screen.fill([0,0,0])
@@ -71,7 +57,6 @@ class Analyser(object):
             self.figures["chromosome"].add_subplot(rows,cols,i+1)
             ax = self.figures["chromosome"].gca()
             ax.text(0,0,fitnesses[i], fontsize=8, verticalalignment='center', horizontalalignment='center')
-            #ax.set_title(fitnesses[i], fontsize=8)
             ax.pie(self.createOriginList(chromosomes[i]), colors=self.plotColors)
 
         canvas = agg.FigureCanvasAgg(self.figures["chromosome"])

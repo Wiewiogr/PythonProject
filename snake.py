@@ -9,13 +9,11 @@ black = 0, 0, 0
 screen = pygame.display.set_mode([width,height])
 gridSize = int(width/grid), int(height/grid)
 font = pygame.font.Font(None,25)
-
-print width, height
 board = snake.board.Board(sizeX,sizeY)
 
+movesUntilStop = 500
 population = 40
-controller = nNet.controller.Controller(population,5,1,1,6,0.7,0.1)
-#controller = nNet.controller.Controller(population,sizeX*sizeY,1,1,40,0.7,0.05)
+controller = nNet.controller.Controller(population,2,1,2,4,0.7,0.1)
 trained = 0
 fitness = []
 
@@ -31,16 +29,17 @@ def drawAll():
     for segment in board.snake.segments:
         pygame.draw.rect(screen,colors[1],pygame.Rect(segment.x*grid,segment.y*grid+80,grid,grid))
 
-    pygame.draw.rect(screen,colors[2],pygame.Rect(board.fruit.x()*grid,board.fruit.y()*grid+80,grid,grid))
+    pygame.draw.rect(screen,colors[2],pygame.Rect(board.fruit.x*grid,board.fruit.y*grid+80,grid,grid))
 
 def getInput():
-    xFoodLocation =  np.sign(board.fruit.x() - board.snake.getHead().x)
-    yFoodLocation = np.sign(board.fruit.y() - board.snake.getHead().y)
+    xFoodLocation =  np.sign(board.fruit.x - board.snake.getHead().x)
+    yFoodLocation = np.sign(board.fruit.y - board.snake.getHead().y)
     surrounding = [0,0,0]
 
     left = board.snake.getHead() + snake.board.snake.direction[(board.snake.direction - 1)%4]
     right = board.snake.getHead() + snake.board.snake.direction[(board.snake.direction + 1)%4]
     forward = board.snake.getHead() + snake.board.snake.direction[board.snake.direction]
+
     if left.x < 0 or left.x >= sizeX or left.y < 0 or left.y >= sizeY:
         surrounding[0] = -1
     elif left == board.fruit.segment:
@@ -58,19 +57,7 @@ def getInput():
 
     result = [xFoodLocation, yFoodLocation]
     result.extend(surrounding)
-    print result
     return result
-
-
-
-    _in = [0 for i in xrange(sizeX*sizeY)]
-    for segment in board.snake.segments:
-        print segment.x
-        print segment.y
-        print segment.y*sizeY+segment.x
-        _in[segment.y*sizeY+segment.x] = 1
-    _in[board.fruit.y()*sizeY+board.fruit.x()] = -1
-    return _in
 
 def parseOutput(output):
     choice = output[0]
@@ -79,15 +66,17 @@ def parseOutput(output):
     elif choice > 0.66:
         board.snake.rotateRight()
 
-
-def controll():
+def moveSnake():
     _in = getInput()
-    parseOutput(controller.getOutput(_in,trained))
+    _out = controller.getOutput(_in,trained)
+    print "input :", _in, "output :", _out
+    parseOutput(_out)
 
 clock = pygame.time.Clock()
-moves = 500
+moves = movesUntilStop
 fast = True
 mode = "run"
+
 while 1:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -109,18 +98,17 @@ while 1:
                     mode = "run"
 
     if mode == "run":
-        controll()
+        #moveSnake()
 
         moves -= 1
         if board.update() == False or moves == 0:
             trained += 1
             score = board.snake.score
-            #score *= 2 # !!!!!!!!!!!!!!!!!
             if score == 0:
-                score = 0.2
+                score = 0.15
             fitness.append(score)
             board.reset()
-            moves = 500
+            moves = movesUntilStop
             if population == trained:
                 controller.evolve(fitness)
                 analyser.update(fitness, controller.geneticAlg.chromosomes)

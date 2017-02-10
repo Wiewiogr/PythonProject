@@ -9,4 +9,6 @@ class Segment(object):
     def __add__(self, otherList):
         return Segment(self.x + otherList[0], self.y + otherList[1])
 
+    def __sub__(self, otherList):
+        return Segment(self.x - otherList[0], self.y - otherList[1])
 

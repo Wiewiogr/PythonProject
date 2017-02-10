@@ -1,4 +1,5 @@
 import pygame
+
 class Paddle(object):
     def __init__(self,left,top,width = 16,height = 120):
         self.height = height
@@ -18,19 +19,6 @@ class Paddle(object):
                 self.rect.y = height - self.height
             else:
                 self.rect.y -= (6*where)
-
-
-        #if where != 0:
-        #    if where > 0:
-        #        if self.rect.y < 0:
-        #            self.rect.y = 0
-        #        else:
-        #            self.rect.y -= 6
-        #    else:
-        #        if self.rect.y > height - self.height:
-        #            self.rect.y = height - self.height
-        #        else:
-        #            self.rect.y += 6
 
     def reset(self):
         self.rect = pygame.rect.Rect(self.initRect)

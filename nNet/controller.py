@@ -9,8 +9,8 @@ class Controller(object):
         self.generation = 1
         self.chromosomeLength = neuronsPerHiddenLayer*(numOfInputs+1)
         self.chromosomeLength += (neuronsPerHiddenLayer+1)*numOfOutputs
-        for i in xrange(1,numOfHiddenLayers):
-            self.chromosomeLength += neuronsPerHiddenLayer*(neuronsPerHiddenLayer+1)
+        self.chromosomeLength += sum([neuronsPerHiddenLayer*(neuronsPerHiddenLayer+1)
+            for i in xrange(1,numOfHiddenLayers)])
         self.geneticAlg = geneAlg.GeneticAlgorithm(population,
                 crossoverRate,mutationRate,self.chromosomeLength,geneInit)
         self.neuralNets = [neuralNet.NeuralNet(numOfInputs,numOfOutputs,
@@ -19,7 +19,6 @@ class Controller(object):
             nNet.putWeights(chromo.genes)
 
     def evolve(self,fitness):
-        print "evolve :",fitness
         self.geneticAlg.fitnesses = fitness[:]
         self.generation += 1
         self.geneticAlg.evolve()
