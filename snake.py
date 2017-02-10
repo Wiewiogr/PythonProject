@@ -1,3 +1,4 @@
+#!/usr/bin/python
 import sys, pygame, snake.board, nNet.controller, analyser.analyser, renderer
 import numpy as np
 pygame.init()

@@ -1,3 +1,4 @@
+#!/usr/bin/python
 import sys, pygame, pong.ball, pong.paddle, nNet.controller, analyser.analyser, renderer
 pygame.init()
 
