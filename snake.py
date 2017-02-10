@@ -1,14 +1,12 @@
-import sys, pygame, snake.board, nNet.controller, analyser
+import sys, pygame, snake.board, nNet.controller, analyser.analyser, renderer
 import numpy as np
 pygame.init()
 
 grid = 40
 sizeX, sizeY = 30,18
 width, height = grid*sizeX, grid*sizeY + 80
-black = 0, 0, 0
 screen = pygame.display.set_mode([width,height])
 gridSize = int(width/grid), int(height/grid)
-font = pygame.font.Font(None,25)
 board = snake.board.Board(sizeX,sizeY)
 
 movesUntilStop = 500
@@ -17,19 +15,16 @@ controller = nNet.controller.Controller(population,2,1,2,4,0.7,0.1)
 trained = 0
 fitness = []
 
-analyser = analyser.Analyser(height, width, population)
+analyser = analyser.analyser.Analyser(height, width, population)
 analyser.update([0 for i in xrange(population+1)], controller.geneticAlg.chromosomes)
 
-colors = [[0,0,0],[0,100,200],[200,100,0],[100,200,0],[230,150,18],[255,0,0],[224,23,246],[23,231,246],[255,255,0],[160,160,0]]
-
-def drawAll():
-    screen.fill(black)
-    screen.blit(font.render("num "+str(trained)+" score : "+str(board.snake.score),1,(255,255,255)),[5,5])
-    screen.blit(font.render("generation : "+str(controller.generation),1,(255,255,255)),[5,30])
+def draw():
+    colors = [[0,100,200],[200,100,0]]
     for segment in board.snake.segments:
-        pygame.draw.rect(screen,colors[1],pygame.Rect(segment.x*grid,segment.y*grid+80,grid,grid))
+        pygame.draw.rect(screen,colors[0],pygame.Rect(segment.x*grid,segment.y*grid+80,grid,grid))
+    pygame.draw.rect(screen,colors[1],pygame.Rect(board.fruit.x*grid,board.fruit.y*grid+80,grid,grid))
 
-    pygame.draw.rect(screen,colors[2],pygame.Rect(board.fruit.x*grid,board.fruit.y*grid+80,grid,grid))
+drawAll = renderer.createDrawAllFunction(draw, width, height)
 
 def getInput():
     xFoodLocation =  np.sign(board.fruit.x - board.snake.getHead().x)
@@ -59,18 +54,15 @@ def getInput():
     result.extend(surrounding)
     return result
 
-def parseOutput(output):
-    choice = output[0]
-    if choice < 0.33:
-        board.snake.rotateLeft()
-    elif choice > 0.66:
-        board.snake.rotateRight()
-
 def moveSnake():
     _in = getInput()
     _out = controller.getOutput(_in,trained)
     print "input :", _in, "output :", _out
-    parseOutput(_out)
+    choice = _out[0]
+    if choice < 0.33:
+        board.snake.rotateLeft()
+    elif choice > 0.66:
+        board.snake.rotateRight()
 
 clock = pygame.time.Clock()
 moves = movesUntilStop
@@ -98,7 +90,7 @@ while 1:
                     mode = "run"
 
     if mode == "run":
-        #moveSnake()
+        moveSnake()
 
         moves -= 1
         if board.update() == False or moves == 0:
@@ -115,7 +107,7 @@ while 1:
                 fitness = []
                 trained = 0
 
-        drawAll()
+        drawAll(screen, trained, controller.generation, board.snake.score)
         if fast:
             clock.tick(520)
         else:
