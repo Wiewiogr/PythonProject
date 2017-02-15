@@ -6,9 +6,16 @@ class Segment(object):
     def __eq__(self, other):
         return self.x == other.x and self.y == other.y
 
-    def __add__(self, otherList):
-        return Segment(self.x + otherList[0], self.y + otherList[1])
+    def __add__(self, other):
+        if type(other) == list:
+            return Segment(self.x + other[0], self.y + other[1])
+        elif type(other) == Segment:
+            return Segment(self.x + other.x, self.y + other.y)
 
-    def __sub__(self, otherList):
-        return Segment(self.x - otherList[0], self.y - otherList[1])
+
+    def __sub__(self, other):
+        if type(other) == list:
+            return Segment(self.x - other[0], self.y - other[1])
+        elif type(other) == Segment:
+            return Segment(self.x - other.x, self.y - other.y)
 
