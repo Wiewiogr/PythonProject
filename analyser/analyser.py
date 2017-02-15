@@ -14,9 +14,9 @@ class Analyser(object):
         self.figures = {"max": [], "average": [], "chromosome": []}
         self.plots = {"max": [], "average": [], "chromosome": []}
         self.figureSize = [width/2, height/2]
-        self.figures["max"] = pylab.figure(figsize = [width/200, height/200] , dpi=100,)
-        self.figures["average"] = pylab.figure(figsize = [width/200, height/200] , dpi=100,)
-        self.figures["chromosome"] = pylab.figure(figsize = [width/100, height/200] , dpi=100,)
+        self.figures["max"] = pylab.figure(figsize = [width/100, height/100] , dpi=50,)
+        self.figures["average"] = pylab.figure(figsize = [width/100, height/100] , dpi=50,)
+        self.figures["chromosome"] = pylab.figure(figsize = [width/50, height/100] , dpi=50,)
         self.plotColors = matplotlib.cm.gist_ncar([i*1.0/population for i in xrange(population)])
 
     def draw(self, screen):

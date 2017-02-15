@@ -11,6 +11,3 @@ def createDrawAllFunction(fun, width, height):
         screen.blit(font.render("generation : "+str(generation),1,white),[(width/2)-50,10])
         fun()
     return drawAll
-
-
-

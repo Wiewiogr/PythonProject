@@ -2,7 +2,7 @@
 import sys, pygame, pong.ball, pong.paddle, nNet.controller, analyser.analyser, renderer
 pygame.init()
 
-size = width, height = 1000,800
+size = width, height = 1000,700
 screen = pygame.display.set_mode(size)
 clock = pygame.time.Clock()
 

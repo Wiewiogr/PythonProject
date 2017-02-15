@@ -4,8 +4,8 @@ import numpy as np
 pygame.init()
 
 grid = 40
-sizeX, sizeY = 30,18
-width, height = grid*sizeX, grid*sizeY + 80
+sizeX, sizeY = 30,15
+width, height = grid*sizeX, grid*sizeY + 100
 screen = pygame.display.set_mode([width,height])
 gridSize = int(width/grid), int(height/grid)
 board = snake.board.Board(sizeX,sizeY)
